@@ -31,6 +31,8 @@ namespace fw {
 const Name MulticastStrategy::STRATEGY_NAME("ndn:/localhost/nfd/strategy/multicast/%FD%01");
 NFD_REGISTER_STRATEGY(MulticastStrategy);
 
+const bool debug = true
+
 MulticastStrategy::MulticastStrategy(Forwarder& forwarder, const Name& name)
   : Strategy(forwarder, name)
 {
@@ -44,9 +46,13 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 {
   const fib::NextHopList& nexthops = fibEntry->getNextHops();
 
+  if(debug) std::cout << "inFace: " << inFace.getId() << std::endl;
+
   for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
     shared_ptr<Face> outFace = it->getFace();
     if (pitEntry->canForwardTo(*outFace)) {
+    	if(debug) std::cout << "pitEntry can forward to: " << (pitEntry->canForwardTo(*outFace) == 1 ? "TRUE" : "FALSE")
+    			<< std::endl;
       this->sendInterest(pitEntry, outFace);
     }
   }
