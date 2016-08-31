@@ -31,7 +31,7 @@ namespace fw {
 const Name MulticastStrategy::STRATEGY_NAME("ndn:/localhost/nfd/strategy/multicast/%FD%01");
 NFD_REGISTER_STRATEGY(MulticastStrategy);
 
-const bool debug = true
+const bool debug = true;
 
 MulticastStrategy::MulticastStrategy(Forwarder& forwarder, const Name& name)
   : Strategy(forwarder, name)
