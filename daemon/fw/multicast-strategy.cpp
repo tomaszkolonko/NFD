@@ -48,9 +48,17 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 
   if(debug) std::cout << "inFace: " << inFace.getId() << std::endl;
 
+  // TZ: Random backoff seems not to work. Needs to be checked later.
+  double v1 = (double)(std::rand() % 1000)/1000;
+  sleep(v1);
+
   for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
     shared_ptr<Face> outFace = it->getFace();
     if (pitEntry->canForwardTo(*outFace)) {
+    	if(debug) std::cout << "outFace: " << outFace->getId() << std::endl;
+    	// TZ: Random backoff seems not to work. Needs to be checked later.
+    	v1 = (double)(std::rand() % 1000)/1000;
+    	sleep(v1);
     	if(debug) std::cout << "pitEntry can forward to: " << (pitEntry->canForwardTo(*outFace) == 1 ? "TRUE" : "FALSE")
     			<< std::endl;
       this->sendInterest(pitEntry, outFace);
