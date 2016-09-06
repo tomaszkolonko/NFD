@@ -186,7 +186,7 @@ FibManager::addNextHop(ControlParameters& parameters,
 {
   ndn::nfd::FibAddNextHopCommand command;
 
-  std::cout << "FibManager::addNextHop -> " << parameters << std::endl << std::endl;
+  if(debug) std::cout << "FibManager::addNextHop -> " << parameters << std::endl << std::endl;
   if (!validateParameters(command, parameters))
     {
       NFD_LOG_DEBUG("add-nexthop result: FAIL reason: malformed");
