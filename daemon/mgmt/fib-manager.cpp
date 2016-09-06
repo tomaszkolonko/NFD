@@ -37,6 +37,8 @@ namespace nfd {
 
 NFD_LOG_INIT("FibManager");
 
+const bool debug = true;
+
 const Name FibManager::COMMAND_PREFIX = "/localhost/nfd/fib";
 
 const size_t FibManager::COMMAND_UNSIGNED_NCOMPS =
@@ -90,6 +92,7 @@ FibManager::FibManager(Fib& fib,
                            UNSIGNED_COMMAND_VERBS +
                            (sizeof(UNSIGNED_COMMAND_VERBS) / sizeof(UnsignedVerbAndProcessor)))
 {
+	if(debug) std::cout << "CONSTRUCTOR: inside fibManager constructor" << std::endl;
   face->setInterestFilter("/localhost/nfd/fib",
                           bind(&FibManager::onFibRequest, this, _2));
 }
@@ -183,6 +186,7 @@ FibManager::addNextHop(ControlParameters& parameters,
 {
   ndn::nfd::FibAddNextHopCommand command;
 
+  std::cout << "FibManager::addNextHop -> " << parameters << std::endl << std::endl;
   if (!validateParameters(command, parameters))
     {
       NFD_LOG_DEBUG("add-nexthop result: FAIL reason: malformed");
