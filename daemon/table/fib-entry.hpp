@@ -54,7 +54,8 @@ class Entry : noncopyable
 {
 public:
   explicit
-  Entry(const Name& prefix);
+  //Entry(const Name& prefix);
+  Entry(const Name& prefix, const std::string macAddress);
 
   const Name&
   getPrefix() const;
@@ -91,6 +92,9 @@ public:
   void
   removeNextHop(shared_ptr<Face> face);
 
+  std::string
+  getMacAddress();
+
 private:
   /** @note This method is non-const because normal iterator is needed by callers.
    */
@@ -104,13 +108,14 @@ private:
 private:
   Name m_prefix;
   NextHopList m_nextHops;
+  std::string m_macAddress;
 
   shared_ptr<name_tree::Entry> m_nameTreeEntry;
   friend class nfd::NameTree;
   friend class nfd::name_tree::Entry;
 };
 
-
+// TODO: Why go you have Entry::getPrefix() here as inline and within the class as member function??!?!?!?!?!
 inline const Name&
 Entry::getPrefix() const
 {

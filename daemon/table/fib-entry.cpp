@@ -28,8 +28,14 @@
 namespace nfd {
 namespace fib {
 
-Entry::Entry(const Name& prefix)
+//Entry::Entry(const Name& prefix)
+//  : m_prefix(prefix)
+//{
+//}
+
+Entry::Entry(const Name& prefix, const std::string macAddress)
   : m_prefix(prefix)
+  , m_macAddress(macAddress)
 {
 }
 
@@ -80,6 +86,11 @@ Entry::sortNextHops()
             [] (const NextHop& a, const NextHop& b) { return a.getCost() < b.getCost(); });
 }
 
+std::string
+Entry::getMacAddress()
+{
+	return m_macAddress;
+}
 
 } // namespace fib
 } // namespace nfd
