@@ -92,7 +92,7 @@ FibManager::FibManager(Fib& fib,
                            UNSIGNED_COMMAND_VERBS +
                            (sizeof(UNSIGNED_COMMAND_VERBS) / sizeof(UnsignedVerbAndProcessor)))
 {
-	if(debug) std::cout << "CONSTRUCTOR: inside fibManager constructor" << std::endl;
+	if(debug) std::cout << "INSIDE FibManager::FibManager" << std::endl;
   face->setInterestFilter("/localhost/nfd/fib",
                           bind(&FibManager::onFibRequest, this, _2));
 }
@@ -107,6 +107,8 @@ FibManager::onFibRequest(const Interest& request)
 {
   const Name& command = request.getName();
   const size_t commandNComps = command.size();
+
+  if(debug) std::cout << "INSIDE FibManager::onFibRequest(const Interest& request)" << std::endl;
 
   if (commandNComps <= COMMAND_PREFIX.size())
     {
@@ -151,6 +153,8 @@ FibManager::onValidatedFibRequest(const shared_ptr<const Interest>& request)
   const Name::Component& verb = command[COMMAND_PREFIX.size()];
   const Name::Component& parameterComponent = command[COMMAND_PREFIX.size() + 1];
 
+  if(debug) std::cout << "INSIDE FibManager::onValidatedFibRequest(const shared_ptr<const Interest>& request)" << std::endl;
+
   SignedVerbDispatchTable::const_iterator verbProcessor = m_signedVerbDispatch.find(verb);
   if (verbProcessor != m_signedVerbDispatch.end())
     {
@@ -186,7 +190,8 @@ FibManager::addNextHop(ControlParameters& parameters,
 {
   ndn::nfd::FibAddNextHopCommand command;
 
-  if(debug) std::cout << "FibManager::addNextHop -> " << parameters << std::endl << std::endl;
+  if(debug) std::cout << "INSIDE FibManager::addNextHop(ControlParameters&, ControlResponse&)" << std::endl;
+
   if (!validateParameters(command, parameters))
     {
       NFD_LOG_DEBUG("add-nexthop result: FAIL reason: malformed");
@@ -202,10 +207,18 @@ FibManager::addNextHop(ControlParameters& parameters,
                 << " faceid: " << faceId
                 << " cost: " << cost);
 
+  // TODO: we should probably add macAddress of the next node to the parameters
+  if(debug) {
+	  std::cout << std::endl;
+	  std::cout << "INSIDE FibManager::addNextHop -> " << parameters << std::endl;
+	  std::cout << "add-nexthop prefix: " << prefix << " faceid: " << faceId << "cost: " << cost << std::endl << std::endl;
+  }
+
   shared_ptr<Face> nextHopFace = m_getFace(faceId);
   if (static_cast<bool>(nextHopFace))
     {
-      shared_ptr<fib::Entry> entry = m_managedFib.insert(prefix).first;
+      shared_ptr<fib::Entry> entry = m_managedFib.insert(prefix, "testMacAddress").first;
+      std::cout << "---- >>>>>" << entry->getMacAddress() << std::endl;
 
       entry->addNextHop(nextHopFace, cost);
 
@@ -227,6 +240,8 @@ void
 FibManager::removeNextHop(ControlParameters& parameters,
                           ControlResponse& response)
 {
+	if(debug) std::cout << "INSIDE FibManager::removeNextHop(ControlParameters&, ControlResponse&)" << std::endl;
+
   ndn::nfd::FibRemoveNextHopCommand command;
   if (!validateParameters(command, parameters))
     {
@@ -273,6 +288,8 @@ FibManager::listEntries(const Interest& request)
 {
   const Name& command = request.getName();
   const size_t commandNComps = command.size();
+
+  if(debug) std::cout << "INSIDE FibManager::listEntries(const Interest& request)" << std::endl;
 
   if (commandNComps < LIST_COMMAND_NCOMPS ||
       !LIST_COMMAND_PREFIX.isPrefixOf(command))
