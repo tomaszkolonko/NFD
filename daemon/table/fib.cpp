@@ -33,7 +33,7 @@
 
 namespace nfd {
 
-const shared_ptr<fib::Entry> Fib::s_emptyEntry = make_shared<fib::Entry>(Name());
+const shared_ptr<fib::Entry> Fib::s_emptyEntry = make_shared<fib::Entry>(Name(), "testMacAddress");
 
 // http://en.cppreference.com/w/cpp/concept/ForwardIterator
 BOOST_CONCEPT_ASSERT((boost::ForwardIterator<Fib::const_iterator>));
@@ -117,13 +117,13 @@ Fib::findExactMatch(const Name& prefix) const
 }
 
 std::pair<shared_ptr<fib::Entry>, bool>
-Fib::insert(const Name& prefix)
+Fib::insert(const Name& prefix, std::string macAddress = "defaultMacAddress since none given")
 {
   shared_ptr<name_tree::Entry> nameTreeEntry = m_nameTree.lookup(prefix);
   shared_ptr<fib::Entry> entry = nameTreeEntry->getFibEntry();
   if (static_cast<bool>(entry))
     return std::make_pair(entry, false);
-  entry = make_shared<fib::Entry>(prefix);
+  entry = make_shared<fib::Entry>(prefix, macAddress);
   nameTreeEntry->setFibEntry(entry);
   ++m_nItems;
   return std::make_pair(entry, true);
